@@ -1,0 +1,34 @@
+<taglib xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+	version="2.1">
+
+	<description>Bigpipe tag library</description>
+	<display-name>Big pipe JSP tag library</display-name>
+	<tlib-version>1.1</tlib-version>
+	<short-name>bigpipe</short-name>
+
+	<tag>
+		<description>This tag enables the big-pipe technology.</description>
+		<name>enablePagelets</name>
+		<tag-class>com.myseriousorganization.bigpipe.core.tag.BigPipeStartTag</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>This is a pagelet tag that marks pagelets.</description>
+		<name>pagelet</name>
+		<tag-class>com.myseriousorganization.bigpipe.core.tag.PageletBodyTag</tag-class>
+		<body-content>scriptless</body-content>
+		<attribute>
+			<description>The name of this pagelet block.</description>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>The name of the view object variable that will be used inside the pagelet.</description>
+			<name>viewObject</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+</taglib>
