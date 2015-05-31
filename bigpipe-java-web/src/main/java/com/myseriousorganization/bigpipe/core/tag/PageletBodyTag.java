@@ -57,5 +57,6 @@ public class PageletBodyTag extends SimpleTagSupport {
 		javascriptInvocation.append("</script>");
 		
 		getJspContext().getOut().println(javascriptInvocation.toString());
+		getJspContext().getOut().flush();
 	}
 }

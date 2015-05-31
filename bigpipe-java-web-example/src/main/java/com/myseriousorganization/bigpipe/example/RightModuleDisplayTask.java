@@ -10,6 +10,12 @@ public class RightModuleDisplayTask {
 	
 	@PageletTaskMethod
 	public ViewObject doingStuff() {
+		try {
+			Thread.sleep(5000);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		return new RightModuleVO("Right Module name");
 	}
 }
