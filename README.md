@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/crazysoftwarecoder/bigpipe.svg?branch=master)](https://travis-ci.org/crazysoftwarecoder/bigpipe)
+
 ## A BigPipe implementation for Java
  
 A java implementation of [bigpipe](https://www.facebook.com/notes/facebook-engineering/bigpipe-pipelining-web-pages-for-high-performance/389414033919) technology developed originally at Facebook.
