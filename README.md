@@ -66,6 +66,30 @@ class LeftNavBarDataVO implements ViewObject { // ViewObject is just a marker in
 }
 ```
 
+###Step 3
 
+In your JSP
 
+```jsp
+<%@ taglib prefix="bigpipe" uri="http://www.github.com/crazysoftwarecoder/bigpipe"%>
+<%@ page isELIgnored="false" %>
 
+<html>
+<head></head>
+<body>
+	<bigpipe:enablePagelets /> <!-- Enable bigpipe tech for this JSP here -->
+
+	<bigpipe:pagelet name="leftModule" viewObject="item"> <!-- The name is the one in @PageletTask and the viewObject is the variable name that you want to use in the pagelet for the data object -->
+		${item.message}
+	</bigpipe:pagelet>
+
+  <!-- A second pagelet -->
+	<bigpipe:pagelet name="rightModule" viewObject="item">
+		${item.moduleName}
+	</bigpipe:pagelet>
+
+  <!-- Add more pagelets here -->
+
+</body>
+</html>
+```
