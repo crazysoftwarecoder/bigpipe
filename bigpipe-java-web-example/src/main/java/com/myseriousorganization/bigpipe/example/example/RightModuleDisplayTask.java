@@ -3,20 +3,13 @@ package com.myseriousorganization.bigpipe.example;
 import com.myseriousorganization.bigpipe.core.annotations.PageletTask;
 import com.myseriousorganization.bigpipe.core.annotations.PageletTaskMethod;
 import com.myseriousorganization.bigpipe.core.marker.ViewObject;
+import com.myseriousorganization.bigpipe.example.vo.RightModuleVO;
 
-@PageletTask(name="Remona")
+@PageletTask(name="rightModule")
 public class RightModuleDisplayTask {
 	
 	@PageletTaskMethod
 	public ViewObject doingStuff() {
-		
-		final String threadName = Thread.currentThread().getName(); 
-
-		return new ViewObject() {
-			@Override
-			public String toString() {
-				return threadName;
-			}
-		};
+		return new RightModuleVO("Right Module name");
 	}
 }

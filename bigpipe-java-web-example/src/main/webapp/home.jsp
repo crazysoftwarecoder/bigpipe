@@ -11,5 +11,9 @@
 		${item.message}
 	</bigpipe:pagelet>
 
+	<bigpipe:pagelet name="rightModule" viewObject="item">
+		${item.moduleName}
+	</bigpipe:pagelet>
+
 </body>
 </html>
