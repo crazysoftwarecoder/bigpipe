@@ -79,8 +79,8 @@ In your JSP
 <body>
 	<bigpipe:enablePagelets /> <!-- Enable bigpipe tech for this JSP here -->
 
-	<bigpipe:pagelet name="leftModule" viewObject="item"> <!-- The name is the one in @PageletTask and the viewObject is the variable name that you want to use in the pagelet for the data object -->
-		${item.message}
+	<bigpipe:pagelet name="leftModule" viewObject="item"> <!-- The name is the one in @PageletTask and the viewObject is the variable name that you want to use in the pagelet to get at the data object -->
+		${item.categoryName} <!-- Get at the property of the ViewObject -->
 	</bigpipe:pagelet>
 
   <!-- A second pagelet -->
@@ -93,3 +93,35 @@ In your JSP
 </body>
 </html>
 ```
+
+###Step 4
+
+Then finally in your web.xml
+```xml
+	<servlet>
+		<servlet-name>HomePageServingServlet</servlet-name>
+		<servlet-class>com.myseriousorganization.bigpipe.core.servlet.BigPipeDispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>jsp-file</param-name> <!-- The JSP file to forward to after the @PageletTasks are run -->
+			<param-value>/home.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>pageletTaskClasses</param-name> <!-- The FQCN of the @PageletTaskClasses -->
+			<param-value>com.myseriousorganization.bigpipe.example.LeftModuleDisplayTask,com.myseriousorganization.bigpipe.example.RightModuleDisplayTask</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>HomePageServingServlet</servlet-name>
+		<url-pattern><url-that-you-want-serve></url-pattern> <!-- URL you want to serve -->
+	</servlet-mapping>
+```
+
+###Step 5
+You are all set! Go to http://localhost:8080/<app-context>/<url-that-you-want-serve> and see the results.
+
+## Example
+For an example, look at [here](https://github.com/crazysoftwarecoder/bigpipe/tree/master/bigpipe-java-web-example)
+
+###License
+[MIT](https://github.com/strongloop/express/blob/master/LICENSE)
