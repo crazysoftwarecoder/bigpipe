@@ -5,10 +5,15 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.myseriousorganization.bigpipe.core.marker.ViewObject;
 
 public class PageletTaskOutputHolder {
+	
+	private Logger logger = LoggerFactory.getLogger(PageletTaskOutputHolder.class);
 
 	private Map<String, BlockingQueue<ViewObject>> viewObjects
 		= new ConcurrentHashMap<String, BlockingQueue<ViewObject>>();
@@ -28,15 +33,19 @@ public class PageletTaskOutputHolder {
 	
 	public ViewObject getViewObject(String pageletName) {
 		BlockingQueue<ViewObject> queue = this.viewObjects.get(pageletName);
-		if (queue==null)
-			throw new IllegalArgumentException("Queue for " + pageletName
-					+ " is null.");
+		if (queue==null) {
+			String error = "Queue for " + pageletName + " is null.";
+			logger.error(error);
+			throw new IllegalArgumentException(error);
+		}
 		ViewObject object = null;
 		try {
 			object = queue.take();
 		}
 		catch (InterruptedException e) {
-			// TODO log
+			String message = "Control is not supposed to come here. Something is very wrong";
+			logger.error(message);
+			throw new IllegalStateException(message);
 		}
 		
 		return object;
@@ -55,7 +64,7 @@ public class PageletTaskOutputHolder {
 			queue.put(viewObject);
 		}
 		catch (InterruptedException e) {
-			// TODO
+			
 		}
 	}
 	

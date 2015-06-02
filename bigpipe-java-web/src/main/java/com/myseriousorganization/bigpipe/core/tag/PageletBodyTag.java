@@ -7,10 +7,15 @@ import java.util.Base64;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.myseriousorganization.bigpipe.core.executor.PageletTaskOutputHolder;
 import com.myseriousorganization.bigpipe.core.threadlocal.PageletTaskOutputHolderTL;
 
 public class PageletBodyTag extends SimpleTagSupport {
+	
+	private Logger logger = LoggerFactory.getLogger(PageletBodyTag.class);
 
 	private String name;
 	
@@ -42,9 +47,15 @@ public class PageletBodyTag extends SimpleTagSupport {
 	@Override
 	public void doTag() throws JspException, IOException {
 		PageletTaskOutputHolder viewObjectHolder = PageletTaskOutputHolderTL.local.get();
-		if (viewObjectHolder.doesPageletExist(name)) 
+		if (viewObjectHolder.doesPageletExist(name)) {
+			logger.debug("View object is present for pagelet:=" + name);
 			getJspContext().setAttribute(viewObject, viewObjectHolder.getViewObject(name));
-		// TODO Warn on the logs - that pagelet was not found.
+		}
+		else {
+			String error = "Pagelet view object was not present for pagelet:=" + name;
+			logger.error(error);
+			throw new IllegalArgumentException(error);
+		}
 		
 		emitDivPlaceholder(name);
 		

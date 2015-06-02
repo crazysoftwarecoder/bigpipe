@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-	<groupId>org.myseriousorganization.bigpipe</groupId>
-	<artifactId>bigpipe-parent</artifactId>
-	<version>0.0.1</version>
-	<relativePath>..</relativePath>
+		<groupId>org.myseriousorganization.bigpipe</groupId>
+		<artifactId>bigpipe-parent</artifactId>
+		<version>0.0.1</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>bigpipe-java-web</artifactId>
 	<packaging>jar</packaging>
@@ -25,6 +25,12 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
+		</dependency>
+		<!-- logging api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.12</version>
 		</dependency>
 	</dependencies>
 </project>

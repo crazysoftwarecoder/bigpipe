@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.myseriousorganization.bigpipe.core.exception.TaskExecutionException;
 import com.myseriousorganization.bigpipe.core.executor.PageletTaskExecutor;
 import com.myseriousorganization.bigpipe.core.executor.PageletTaskOutputHolder;
@@ -25,6 +28,8 @@ public class BigPipeDispatcherServlet extends HttpServlet {
 	
 	private PageletTaskExecutor pageletTaskExecutor = new PageletTaskExecutor();
 	
+	private Logger logger = LoggerFactory.getLogger(BigPipeDispatcherServlet.class);
+	
 	@Override
 	public void init(ServletConfig config) {
 		this.forwardToJSP = config.getInitParameter("jsp-file");
@@ -32,8 +37,9 @@ public class BigPipeDispatcherServlet extends HttpServlet {
 			this.pageletTasks = getPageletTaskClasses(config.getInitParameter("pageletTaskClasses"));
 		}
 		catch (ClassNotFoundException e) {
-			// TODO log
-			throw new IllegalArgumentException(e.getMessage());
+			String error = "@PageletTask was not found:= " + e.getMessage();
+			logger.error(error);
+			throw new IllegalArgumentException(error);
 		}
 	}
 	

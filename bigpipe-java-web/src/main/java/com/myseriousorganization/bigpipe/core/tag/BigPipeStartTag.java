@@ -14,7 +14,6 @@ public class BigPipeStartTag extends SimpleTagSupport {
 	private final String SETTER_JS_FUNCTION;
 
 	public BigPipeStartTag() {
-		// TODO Auto-generated constructor stub
 		InputStream is = this.getClass().getResourceAsStream(
 				"/setter_function.js");
 		SETTER_JS_FUNCTION = convertStreamToString(is);
