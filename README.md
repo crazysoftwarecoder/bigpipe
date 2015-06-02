@@ -4,6 +4,22 @@
  
 A java implementation of [bigpipe](https://www.facebook.com/notes/facebook-engineering/bigpipe-pipelining-web-pages-for-high-performance/389414033919) technology developed originally at Facebook.
 
+## Architecture
+
+![Imgur](http://i.imgur.com/OkKZ0iO.jpg)
+
+The flow of a request goes like this:
+
+1. The client browser sends a HTTP request.
+2. A BigPipeDispatcherServlet(Front Controller) receives the request, and starts multiple tasks (also called as Pagelet Tasks).
+3. The Pagelet tasks start fetching data for different pagelets from the EIS/Internet data sources.
+4. Immediately after 2, the JSP to churn out presentation markup (HTML) is also cranked up.
+5. The JSP receives all the pagelet data asynchronously and flushes out HTML markup over the wire, along with javascript code to paint placeholders on the page. During this time, the server keeps the HTTP connection open.
+6. The client receives the javascript code + content (HTML, CSS + more javascript) and paints placeholders on the page appropriately.
+7. The server finally closes the HTTP connection.
+
+**Note** - The execution of the JSP is still blocking (i.e. the first pagelet on the page will still block - waiting for its data to come back, and then it will go to the second pagelet, and so on). This will be changed to asynchronous execution in the very near future (Submit a patch if you'd like to contribute). However, it is good to note that such a restriction will give a pleasant user experience to visitors (as they see the header loading first, then the middle components, and then the footer in a top down fashion).
+
 ### Prerequisites
 
 * You are running a JSP/Servlet container (Apache Tomcat)
