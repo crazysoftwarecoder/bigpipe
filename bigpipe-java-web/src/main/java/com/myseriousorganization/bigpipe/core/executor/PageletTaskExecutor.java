@@ -13,7 +13,6 @@ import com.myseriousorganization.bigpipe.core.annotations.PageletTask;
 import com.myseriousorganization.bigpipe.core.annotations.PageletTaskMethod;
 import com.myseriousorganization.bigpipe.core.exception.TaskExecutionException;
 import com.myseriousorganization.bigpipe.core.marker.ViewObject;
-import com.myseriousorganization.bigpipe.core.threadlocal.HttpServletRequestTL;
 import com.myseriousorganization.bigpipe.core.threadlocal.PageletTaskOutputHolderTL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +42,7 @@ public class PageletTaskExecutor {
 		this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 	}
 	
-	public void execute(final Object pageletTask) throws TaskExecutionException {
+	public void execute(final Object pageletTask, final HttpServletRequest servletRequest) throws TaskExecutionException {
 		Preconditions.checkArgument(pageletTask!=null);
 
 		// Validate if this is a pagelet task.
@@ -59,13 +58,10 @@ public class PageletTaskExecutor {
 		
 		final Method method = getMethodFromTask(pageletTask);
 
-		final HttpServletRequest servletRequest = HttpServletRequestTL.local.get();
-		
 		executorService.execute(new Runnable() {
 			public void run() {
 				try {
 					// Setting the Servlet request on the new thread.
-					HttpServletRequestTL.local.set(servletRequest);
 					Object returnObject = method.invoke(pageletTask, new Object[] {servletRequest});
 					// Send the return ViewObject packing off to the JSP pagelet snippets
 					// that want it.
@@ -96,10 +92,12 @@ public class PageletTaskExecutor {
 			Annotation pageletMethodAnnotation = method.getAnnotation(PageletTaskMethod.class);
 			if (pageletMethodAnnotation!=null) {
 				Class<?>[] parameters = method.getParameterTypes();
-				if ( (parameters.length!=1) || (!parameters[0].getClass().equals(HttpServletRequest.class)) ) {
-					throw new IllegalArgumentException(
-							"@PageletTaskMethod " + method.getDeclaringClass() + "." + method.getName()
-									+ "does not have HttpServletRequest as the ONLY argument");
+				if ( (parameters.length!=1) || 
+						(!parameters[0].getCanonicalName().equals(HttpServletRequest.class.getCanonicalName())) ) {
+					String message = "@PageletTaskMethod " + method.getDeclaringClass() + "." + method.getName()
+							+ " does not have HttpServletRequest as the ONLY argument";
+					logger.error(message);
+					throw new IllegalArgumentException(message);
 				}
 				annotatedMethod = method;
 				break;

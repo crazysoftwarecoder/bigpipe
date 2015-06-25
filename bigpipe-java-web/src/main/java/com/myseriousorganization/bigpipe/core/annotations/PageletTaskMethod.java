@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 /**
  * Annotate the method which is will serve
  * the <b>ViewObject</b> for the pagelet.
+ * 
+ * The only argument to this method must be <b>HttpServletRequest</b>
  *
  * This method will be executed in a separate thread for parallelization.
  */

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import com.myseriousorganization.bigpipe.core.exception.TaskExecutionException;
 import com.myseriousorganization.bigpipe.core.executor.PageletTaskExecutor;
 import com.myseriousorganization.bigpipe.core.executor.PageletTaskOutputHolder;
-import com.myseriousorganization.bigpipe.core.threadlocal.HttpServletRequestTL;
 import com.myseriousorganization.bigpipe.core.threadlocal.PageletTaskOutputHolderTL;
 
 /**
@@ -65,15 +64,13 @@ public class BigPipeDispatcherServlet extends HttpServlet {
     public void service(
     	HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
     	
-    	// Set the servletRequest in the thread local.
-    	HttpServletRequestTL.local.set(req);
     	PageletTaskOutputHolderTL.local.set(new PageletTaskOutputHolder());
     	
     	for (Class<?> pageletTask : pageletTasks) {
     		try {
     			// Creating new pagelet task objects per request
     			// for thread safety.
-    			pageletTaskExecutor.execute(pageletTask.newInstance());
+    			pageletTaskExecutor.execute(pageletTask.newInstance(), req);
     		}
     		catch (IllegalAccessException | TaskExecutionException | InstantiationException e) {
     			throw new ServletException(e.getMessage());

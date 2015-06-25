@@ -55,8 +55,17 @@ If ClassA.doStuff will serve a pagelet's data, then do the following
 @PageletTask(name="leftNavigationBar") // Lets assume this serves the left navigation bar of a website.
 public ClassA {
 
+  /**
+   * Annotate the method that will fetch the data for the pagelet.
+   * This method will be called in a separate thread so that it
+   * can be parallelized.
+   *
+   * The ONLY argument to this method must be a <b>HttpServletRequest</b>
+   * Remember for the developer who is using this, this is the 
+   * Servlet and the response is the <b>ViewObject</b>
+   */
   @PageletTaskMethod // Annotate the method that will fetch the data for you.
-  public ViewObject doStuff() {
+  public ViewObject doStuff(HttpServletRequest servletRequest) {
     
   }
 }
