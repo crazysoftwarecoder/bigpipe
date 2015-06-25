@@ -66,7 +66,9 @@ public ClassA {
    */
   @PageletTaskMethod // Annotate the method that will fetch the data for you.
   public ViewObject doStuff(HttpServletRequest servletRequest) {
-    
+    // Type code to transform the request into the 
+    // response here, optionally accessing all resources to
+    // help achieve that.
   }
 }
 ```
