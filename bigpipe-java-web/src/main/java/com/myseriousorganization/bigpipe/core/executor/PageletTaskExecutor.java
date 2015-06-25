@@ -7,15 +7,27 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+
 import com.google.common.base.Preconditions;
 import com.myseriousorganization.bigpipe.core.annotations.PageletTask;
 import com.myseriousorganization.bigpipe.core.annotations.PageletTaskMethod;
 import com.myseriousorganization.bigpipe.core.exception.TaskExecutionException;
 import com.myseriousorganization.bigpipe.core.marker.ViewObject;
+import com.myseriousorganization.bigpipe.core.threadlocal.HttpServletRequestTL;
 import com.myseriousorganization.bigpipe.core.threadlocal.PageletTaskOutputHolderTL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * <b>PageletTaskExecutor</b> orchestrates the execution of
+ * @PageletTask's in a new thread and gathers all the <b>ViewObject</b>s
+ */
 public class PageletTaskExecutor {
-	
+
+	private static final Logger logger = LoggerFactory.getLogger(PageletTaskExecutor.class);
+
 	private ExecutorService executorService = null;
 	
 	public PageletTaskExecutor(int noOfThreads) {
@@ -46,15 +58,22 @@ public class PageletTaskExecutor {
 		outputHolder.addPageletTask(pageletTaskName);
 		
 		final Method method = getMethodFromTask(pageletTask);
+
+		final HttpServletRequest servletRequest = HttpServletRequestTL.local.get();
 		
 		executorService.execute(new Runnable() {
 			public void run() {
 				try {
-					Object returnObject = method.invoke(pageletTask, new Object[]{});
+					// Setting the Servlet request on the new thread.
+					HttpServletRequestTL.local.set(servletRequest);
+					Object returnObject = method.invoke(pageletTask, new Object[] {servletRequest});
+					// Send the return ViewObject packing off to the JSP pagelet snippets
+					// that want it.
 					outputHolder.putViewObject(pageletTaskName, (ViewObject) returnObject);
 				}
 				catch (InvocationTargetException | IllegalAccessException e) {
-					// TO DO logging.
+					logger.error("Error while invoking @PageletTaskMethod ("
+					+ method.getDeclaringClass() + "." + method.getName() + "):= " + e.getMessage());
 				}
 			}
 		});
@@ -65,7 +84,7 @@ public class PageletTaskExecutor {
 	}
 
 	private String getPageletTaskName(Object obj) {
-		PageletTask pageletTask = obj.getClass().getDeclaredAnnotation(PageletTask.class);
+		PageletTask pageletTask = obj.getClass().getAnnotation(PageletTask.class);
 		return pageletTask.name();
 	}
 	
@@ -76,6 +95,12 @@ public class PageletTaskExecutor {
 		for (Method method : methods) {
 			Annotation pageletMethodAnnotation = method.getAnnotation(PageletTaskMethod.class);
 			if (pageletMethodAnnotation!=null) {
+				Class<?>[] parameters = method.getParameterTypes();
+				if ( (parameters.length!=1) || (!parameters[0].getClass().equals(HttpServletRequest.class)) ) {
+					throw new IllegalArgumentException(
+							"@PageletTaskMethod " + method.getDeclaringClass() + "." + method.getName()
+									+ "does not have HttpServletRequest as the ONLY argument");
+				}
 				annotatedMethod = method;
 				break;
 			}

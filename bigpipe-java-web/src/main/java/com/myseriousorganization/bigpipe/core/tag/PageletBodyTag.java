@@ -2,10 +2,11 @@ package com.myseriousorganization.bigpipe.core.tag;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Base64;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
+import javax.xml.bind.DatatypeConverter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import com.myseriousorganization.bigpipe.core.executor.PageletTaskOutputHolder;
 import com.myseriousorganization.bigpipe.core.threadlocal.PageletTaskOutputHolderTL;
 
+/**
+ * Tag that defines a pagelet snippet.
+ */
 public class PageletBodyTag extends SimpleTagSupport {
 	
 	private Logger logger = LoggerFactory.getLogger(PageletBodyTag.class);
@@ -44,6 +48,19 @@ public class PageletBodyTag extends SimpleTagSupport {
 		getJspContext().getOut().println(div);
 	}
 
+	protected String getBase64String(String input) {
+		try {
+			byte[] inputBytes = input.getBytes("UTF-8");
+			String encodedString = DatatypeConverter.printBase64Binary(inputBytes);
+			return encodedString;
+		}
+		catch (UnsupportedEncodingException e) {
+			String message = "Could not transform String to UTF-8 bytes";
+			logger.error(e.getMessage());
+			throw new IllegalArgumentException(message);
+		}
+	}
+
 	@Override
 	public void doTag() throws JspException, IOException {
 		PageletTaskOutputHolder viewObjectHolder = PageletTaskOutputHolderTL.local.get();
@@ -61,7 +78,7 @@ public class PageletBodyTag extends SimpleTagSupport {
 		
 		getJspBody().invoke(writer);
 
-		String pageletContent = Base64.getEncoder().encodeToString(writer.toString().getBytes());
+		String pageletContent = getBase64String(writer.toString());
 		
 		StringBuffer javascriptInvocation = new StringBuffer("<script type=\"text/javascript\">");
 		javascriptInvocation.append("setHTML('" + name + "','" + pageletContent + "');");

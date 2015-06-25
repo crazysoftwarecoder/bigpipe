@@ -18,6 +18,9 @@ import com.myseriousorganization.bigpipe.core.executor.PageletTaskOutputHolder;
 import com.myseriousorganization.bigpipe.core.threadlocal.HttpServletRequestTL;
 import com.myseriousorganization.bigpipe.core.threadlocal.PageletTaskOutputHolderTL;
 
+/**
+ * Front controller pattern for all pagelet task mini controllers.
+ */
 public class BigPipeDispatcherServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4125890259732263067L;

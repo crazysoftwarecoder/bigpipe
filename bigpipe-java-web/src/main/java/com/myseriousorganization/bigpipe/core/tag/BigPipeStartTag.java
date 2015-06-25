@@ -9,6 +9,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+/**
+ * big-pipe start tag to enable bigpipe tech.
+ */
 public class BigPipeStartTag extends SimpleTagSupport {
 
 	private final String SETTER_JS_FUNCTION;
@@ -22,8 +25,7 @@ public class BigPipeStartTag extends SimpleTagSupport {
 	private static String convertStreamToString(InputStream is) {
 		if (is == null)
 			return null;
-		StringBuilder sb = new StringBuilder(2048); // Define a size if you have
-													// an idea of it.
+		StringBuilder sb = new StringBuilder(2048);
 		char[] read = new char[128]; // Your buffer size.
 		try (InputStreamReader ir = new InputStreamReader(is,
 				StandardCharsets.UTF_8)) {
