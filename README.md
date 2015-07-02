@@ -150,7 +150,7 @@ Then finally in your web.xml
 You are all set! Go to **http://localhost:8080/app-context/url-that-you-want-serve/** and see the results.
 
 ## Example
-For an example, look at [here](https://github.com/crazysoftwarecoder/bigpipe/tree/master/bigpipe-java-web-example)
+For an example, look [here](https://github.com/crazysoftwarecoder/bigpipe/tree/master/bigpipe-java-web-example)
 
 ###License
 [MIT](https://github.com/strongloop/express/blob/master/LICENSE)
